@@ -607,14 +607,21 @@
             </div>
         </div>
     </div>
-    <div id="retirada-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
-        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-3xl transform transition-all -translate-y-full max-h-[90vh] flex flex-col">
-            <h2 id="modal-title" class="text-2xl font-bold mb-6 flex-shrink-0">Nova Retirada de Material</h2>
-            <form id="retirada-form" class="flex-grow flex flex-col overflow-hidden">
-                <div class="flex-shrink-0">
+<div id="retirada-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl transform transition-all -translate-y-full h-[90vh] flex flex-col overflow-hidden">
+            
+            <div class="p-6 border-b flex-shrink-0">
+                <h2 id="modal-title" class="text-2xl font-bold">Nova Retirada de Material</h2>
+            </div>
+
+            <form id="retirada-form" class="flex flex-col flex-grow overflow-hidden">
+                
+                <div class="flex-grow overflow-y-auto p-6 space-y-6">
+                    
                     <input type="hidden" id="retirada-id">
                     <input type="hidden" id="solicitacao-id-carrier">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="relative">
                             <label for="retirada-professor-input" class="block text-sm font-medium text-gray-700">Colaborador</label>
                             <input list="professores-datalist" id="retirada-professor-input" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm" required placeholder="Digite ou selecione um colaborador...">
@@ -626,23 +633,27 @@
                             <input type="date" id="retirada-date" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm" required>
                         </div>
                     </div>
-                    <h3 class="font-semibold mt-6 mb-2">Itens Selecionados</h3>
-                    <div id="retirada-itens-list" class="space-y-2 max-h-32 overflow-y-auto p-2 bg-gray-100 rounded-md border"></div>
-                    <p id="retirada-itens-placeholder" class="text-sm text-center text-gray-500 py-4">Nenhum item selecionado.</p>
+
+                    <div>
+                        <h3 class="font-semibold mb-2 text-gray-700">Itens Selecionados</h3>
+                        <div id="retirada-itens-list" class="space-y-2 max-h-60 overflow-y-auto p-3 bg-gray-50 rounded-md border border-gray-200"></div>
+                        <p id="retirada-itens-placeholder" class="text-sm text-center text-gray-500 py-4">Nenhum item selecionado.</p>
+                    </div>
+
+                    <div class="border rounded-lg overflow-hidden">
+                        <div class="p-4 bg-gray-100 border-b">
+                            <h3 class="font-semibold text-gray-700">Adicionar Itens do Estoque</h3>
+                            <input type="text" id="modal-item-filter" placeholder="Buscar item..." class="w-full p-2 border border-gray-300 rounded-md mt-2 bg-white">
+                        </div>
+                        <div id="modal-itens-accordion-container" class="p-4 space-y-3"></div>
+                    </div>
+
+                </div> 
+                <div class="p-4 border-t bg-gray-50 flex justify-end gap-4 flex-shrink-0">
+                    <button type="button" id="cancel-retirada-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm">Cancelar</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-sm transform transition hover:scale-105">Salvar</button>
                 </div>
 
-                <div class="flex-grow mt-4 border rounded-lg flex flex-col overflow-hidden">
-                    <div class="p-4 border-b flex-shrink-0">
-                        <h3 class="font-semibold text-gray-700">Adicionar Itens do Estoque</h3>
-                        <input type="text" id="modal-item-filter" placeholder="Buscar item..." class="w-full p-2 border border-gray-300 rounded-md mt-2">
-                    </div>
-                    <div id="modal-itens-accordion-container" class="p-4 space-y-3 overflow-y-auto flex-grow"></div>
-                </div>
-                
-                <div class="flex justify-end gap-4 mt-8 flex-shrink-0">
-                    <button type="button" id="cancel-retirada-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">Cancelar</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Salvar</button>
-                </div>
             </form>
         </div>
     </div>
