@@ -709,9 +709,9 @@
         const appId = 'almoxarifado-app-global';
 
         let app, db;
-        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeOperators, unsubscribeSolicitacoes, unsubscribePurchaseRequests;
+        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeAuditLog, unsubscribeOperators, unsubscribeSolicitacoes, unsubscribePurchaseRequests;
         
-        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], localOperators = [], localSolicitacoes = [], localPurchaseRequests = [];
+        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], auditLog = [], localOperators = [], localSolicitacoes = [], localPurchaseRequests = [];
         let currentRetirada = null;
         let currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
         let topItemsChart, topProfessorsChart;
@@ -1128,7 +1128,23 @@
             });
         }
         
-    
+        function renderAuditLog(logs) {
+            const tbody = document.getElementById('audit-log-body');
+            const placeholder = document.getElementById('audit-log-placeholder');
+            tbody.innerHTML = '';
+            placeholder.classList.toggle('hidden', logs.length > 0);
+            
+            logs.sort((a,b) => b.timestamp.toMillis() - a.timestamp.toMillis()).forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 text-sm text-gray-500">${log.timestamp.toDate().toLocaleString('pt-BR')}</td>
+                    <td class="px-6 py-4 font-medium">${log.operator}</td>
+                    <td class="px-6 py-4">${log.details}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
         function updateDashboard() {
             if (!document.getElementById('top-items-chart')) return;
@@ -1500,6 +1516,7 @@
             unsubscribeCategories = attach('categories', data => { localCategories = data; renderCategories(data); });
             unsubscribeItens = attach('itens', data => { localItens = data; renderItens(data); updateDashboard(); });
             unsubscribeRetiradas = attach('retiradas', data => { allRetiradas = data; renderRetiradas(); updateDashboard(); });
+            unsubscribeAuditLog = attach('audit_log', data => { auditLog = data; renderAuditLog(data); });
             
             unsubscribeSolicitacoes = attach('solicitacoes', data => {
                 localSolicitacoes = data;
@@ -1523,10 +1540,15 @@
             if (unsubscribeCategories) unsubscribeCategories();
             if (unsubscribeItens) unsubscribeItens();
             if (unsubscribeRetiradas) unsubscribeRetiradas();
+            if (unsubscribeAuditLog) unsubscribeAuditLog();
             if (unsubscribeSolicitacoes) unsubscribeSolicitacoes();
             if (unsubscribePurchaseRequests) unsubscribePurchaseRequests();
         }
         
+        async function logAction(action, details) {
+            try { await addDoc(getCollectionRef('audit_log'), { operator: currentUser.name || 'Sistema', action, details, timestamp: serverTimestamp() }); }
+            catch(e) { console.error("Error logging action:", e); }
+        }
         
         async function addItem(name, initialQuantity, categoryId = "") { 
             try { 
@@ -1575,7 +1597,7 @@
         async function deleteCategory(id, name) { showConfirmModal('Excluir Categoria', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('categories', id)); logAction('CATEGORIA_EXCLUIDA', `Categoria "${name}" excluída.`); showToast(`Categoria excluída.`, 'success'); } catch(e) { console.error("Erro ao excluir categoria:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function deleteOperator(id, name) { showConfirmModal('Excluir Operador', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('operators', id)); logAction('OPERADOR_EXCLUIDO', `Operador "${name}" foi excluído.`); showToast(`Operador excluído.`, 'success'); } catch(e) { console.error("Erro ao excluir operador:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function finalizeRetirada(id) { try { await updateDoc(getDocRef('retiradas', id), { status: 'Concluído com Pendência' }); logAction('RETIRADA_FINALIZADA', `Retirada ID ${id.substring(0,5)}... finalizada.`); showToast(`Retirada finalizada.`, 'success'); } catch(e) { console.error("Erro ao finalizar retirada:", e); showToast("Erro ao finalizar.", 'error'); }}
-       
+        async function clearAuditLog() { showConfirmModal('Limpar Histórico?', 'Esta ação é irreversível e apagará todos os registros de auditoria.', async () => { try { const logSnaps = await getDocs(getCollectionRef('audit_log')); const batch = writeBatch(db); logSnaps.forEach(doc => batch.delete(doc.ref)); await batch.commit(); logAction('HISTORICO_APAGADO', 'Todo o histórico de alterações foi apagado.'); showToast('Histórico de alterações apagado.', 'success'); } catch (e) { console.error("Erro ao limpar histórico:", e); showToast("Erro ao limpar histórico.", 'error'); } });}
         
         async function saveRetirada(data) {
             try {
@@ -1765,8 +1787,8 @@
             document.getElementById('logout-btn').addEventListener('click', () => {
                 currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
                 detachListeners();
-                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; localOperators = []; localSolicitacoes = []; localPurchaseRequests = [];
-                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderOperators([]); renderSolicitacoes(); renderPurchaseRequests(); renderApprovals(); renderPurchaseHistory();
+                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; auditLog = []; localOperators = []; localSolicitacoes = []; localPurchaseRequests = [];
+                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderAuditLog([]); renderOperators([]); renderSolicitacoes(); renderPurchaseRequests(); renderApprovals(); renderPurchaseHistory();
                 updateSolicitacoesBadge();
                 updatePurchaseRequestsBadge();
                 updateApprovalsBadge();
@@ -1850,7 +1872,7 @@
             ['item-filter', 'category-filter-select'].forEach(id => document.getElementById(id).addEventListener('input', () => renderItens(localItens)));
             
             document.getElementById('clear-filter-btn').addEventListener('click', () => { ['filter-date', 'filter-professor', 'filter-item'].forEach(id => document.getElementById(id).value = ''); renderRetiradas(); });
-
+            document.getElementById('clear-history-btn').addEventListener('click', clearAuditLog);
             
             document.getElementById('nova-retirada-btn').addEventListener('click', () => { 
                 currentRetirada = null; 
