@@ -123,11 +123,6 @@
                     <button data-tab="retiradas" class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
                         <i class="fas fa-dolly mr-2"></i>Retiradas
                     </button>
-                    <!-- <button data-tab="chat" class="tab-button ..."> -->
-    <!--<i class="fas fa-comments mr-2"></i>Chat
-     O número de mensagens não lidas aparecerá aqui -->
-    <!--<span id="chat-badge-total" class="hidden ...">0</span>
-</button> -->
                     <button data-tab="professores" class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
                         <i class="fas fa-users mr-2"></i>Colaboradores
                     </button>
@@ -401,42 +396,6 @@
                     </div>
                 </div>
             </div>
-
-<div id="tab-content-chat" class="tab-pane hidden h-[80vh]">
-    <div class="flex h-full bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-        <!-- Coluna da Esquerda: Lista de Contatos -->
-        <div class="w-1/3 border-r border-gray-200 bg-gray-50 flex flex-col">
-            <div class="p-4 border-b bg-white">
-                <h3 class="font-bold text-gray-700">Conversas Ativas</h3>
-                <input type="text" id="chat-search-contact" placeholder="Filtrar professor..." class="mt-2 w-full p-2 text-sm border rounded-md">
-            </div>
-            <div id="chat-contacts-list" class="flex-grow overflow-y-auto">
-                <p class="text-center text-gray-400 p-4">Carregando conversas...</p>
-            </div>
-        </div>
-        <!-- Coluna da Direita: Mensagens -->
-        <div class="w-2/3 flex flex-col bg-white">
-            <div id="chat-header" class="p-4 border-b bg-gray-50 flex justify-between items-center">
-                <span class="font-bold text-gray-700" id="chat-active-user-name">Selecione uma conversa</span>
-            </div>
-            <div id="chat-messages-area" class="flex-grow p-4 overflow-y-auto space-y-3 bg-gray-100">
-                <div class="flex items-center justify-center h-full text-gray-400 flex-col">
-                    <i class="fas fa-comments text-4xl mb-2"></i>
-                    <p>Selecione um professor para iniciar o atendimento.</p>
-                </div>
-            </div>
-            <!-- Input de Envio -->
-            <div class="p-4 border-t bg-white">
-                <form id="admin-chat-form" class="flex gap-2">
-                    <input type="text" id="admin-chat-input" disabled class="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Selecione um chat..." autocomplete="off">
-                    <button type="submit" id="admin-chat-send-btn" disabled class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
             <div id="tab-content-admin" class="tab-pane hidden">
                  <h2 class="text-2xl font-semibold text-gray-700 mb-6">Painel do Administrador</h2>
@@ -736,7 +695,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, doc, addDoc, onSnapshot, updateDoc, deleteDoc, writeBatch, query, where, serverTimestamp, getDocs, increment, getDoc, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, addDoc, onSnapshot, updateDoc, deleteDoc, writeBatch, query, where, serverTimestamp, getDocs, increment, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyCiSA3hcGqJ4BKtkxNrS9DBrEP4NcpxAVo",
@@ -750,15 +709,13 @@
         const appId = 'almoxarifado-app-global';
 
         let app, db;
-        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeOperators, unsubscribeSolicitacoes, unsubscribePurchaseRequests;
+        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeAuditLog, unsubscribeOperators, unsubscribeSolicitacoes, unsubscribePurchaseRequests;
         
-        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], localOperators = [], localSolicitacoes = [], localPurchaseRequests = [];
+        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], auditLog = [], localOperators = [], localSolicitacoes = [], localPurchaseRequests = [];
         let currentRetirada = null;
         let currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
         let topItemsChart, topProfessorsChart;
         let activeItemInputForQuickAdd = null;
-
-        
         
         let previousPendingCount = 0;
         const notificationSound = new Audio("data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGljZW5zZWQgRm9yIE5vbi1Db21tZXJjaWFsIFVzZSBPbmx5AAAAAA4ubW9kcGxhZwAAAAAgaHJ0RwAAAAADlTE3AAAAAAAAAAAAAAD/2loDAAAAAAABDValdwAAAAAAAAAAAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA//uQyAAXkAAAAAqgAABeAAAAAFgAA/9oADhAAAAAIAAEAAAABAAAADQAAAAEAAAAHAAAAAAAAAAQAIAAAAAAAAAAAAACgAAAAA");
@@ -777,128 +734,6 @@
                 if (innerDiv) innerDiv.classList.remove('-translate-y-full');
             }, 10);
         }
-
-
-        // Variáveis Globais do Chat Admin
-let currentChatId = null;
-let unsubscribeChatMessages = null;
-let unsubscribeChatList = null;
-
-// --- Funções do Chat Admin ---
-
-function initAdminChat() {
-    if(unsubscribeChatList) unsubscribeChatList(); // Limpa listener anterior se existir
-    
-    // Consulta: Ordena chats pela mensagem mais recente
-    const q = query(getCollectionRef('chats'), orderBy('lastMessageTime', 'desc'));
-    
-    unsubscribeChatList = onSnapshot(q, (snapshot) => {
-        const listContainer = document.getElementById('chat-contacts-list');
-        listContainer.innerHTML = '';
-        let totalUnread = 0;
-
-        snapshot.docs.forEach(doc => {
-            const chat = { id: doc.id, ...doc.data() };
-            const unread = chat.unreadAdmin || 0;
-            totalUnread += unread;
-
-            // Cria o elemento da lista
-            const div = document.createElement('div');
-            // Adiciona classe bg-blue-100 se for o chat aberto no momento
-            div.className = `p-4 border-b cursor-pointer hover:bg-blue-50 transition-colors ${currentChatId === chat.id ? 'bg-blue-100' : ''}`;
-            div.onclick = () => openAdminChat(chat.id, chat.professorName);
-            
-            // Renderiza nome, última mensagem e badge individual
-            div.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span class="font-bold text-gray-800 text-sm truncate w-3/4">${chat.professorName}</span>
-                    ${unread > 0 ? `<span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">${unread}</span>` : ''}
-                </div>
-                <p class="text-xs text-gray-500 truncate mt-1">${chat.lastMessage || '...'}</p>
-            `;
-            listContainer.appendChild(div);
-        });
-
-        // Atualiza o Badge Vermelho da Aba Principal
-        const badge = document.getElementById('chat-badge-total');
-        if (totalUnread > 0) {
-            badge.textContent = totalUnread;
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-        }
-    });
-}
-
-function openAdminChat(chatId, professorName) {
-    // 1. Limpeza
-    if (unsubscribeChatMessages) unsubscribeChatMessages();
-    currentChatId = chatId;
-    
-    // 2. UI Updates
-    document.getElementById('chat-active-user-name').textContent = professorName;
-    document.getElementById('admin-chat-input').disabled = false;
-    document.getElementById('admin-chat-send-btn').disabled = false;
-    
-    // 3. Marca mensagens como lidas (zera o contador do admin)
-    updateDoc(doc(getCollectionRef('chats'), chatId), { unreadAdmin: 0 });
-
-    // 4. Carrega mensagens (Subcoleção 'messages' ordenada por tempo)
-    const qMsg = query(collection(db, 'almoxarifado', appId, 'chats', chatId, 'messages'), orderBy('timestamp', 'asc'));
-    
-    unsubscribeChatMessages = onSnapshot(qMsg, (snapshot) => {
-        const area = document.getElementById('chat-messages-area');
-        area.innerHTML = '';
-        
-        snapshot.docs.forEach(doc => {
-            const msg = doc.data();
-            // Verifica quem mandou para alinhar à esquerda ou direita
-            const isMe = msg.senderRole === 'admin' || msg.senderRole === 'operator';
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `flex w-full ${isMe ? 'justify-end' : 'justify-start'}`;
-            msgDiv.innerHTML = `
-                <div class="max-w-[70%] p-3 rounded-lg text-sm ${isMe ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white border text-gray-800 rounded-bl-none shadow-sm'}">
-                    <p>${msg.text}</p>
-                </div>
-            `;
-            area.appendChild(msgDiv);
-        });
-        // Rola para o fim
-        area.scrollTop = area.scrollHeight;
-    });
-}
-
-document.getElementById('admin-chat-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = document.getElementById('admin-chat-input');
-    const text = input.value.trim();
-    if (!text || !currentChatId) return;
-
-    input.value = '';
-    
-    const chatRef = doc(getCollectionRef('chats'), currentChatId);
-    
-    // 1. Adiciona a mensagem na subcoleção
-    await addDoc(collection(chatRef, 'messages'), {
-        text,
-        senderId: currentUser.role, 
-        senderName: currentUser.name,
-        senderRole: 'admin', 
-        timestamp: serverTimestamp()
-    });
-
-    // 2. Atualiza o documento do Chat (para notificar o professor)
-    await updateDoc(chatRef, {
-        lastMessage: text,
-        lastMessageTime: serverTimestamp(),
-        unreadProfessor: increment(1) // Aumenta o contador do professor
-    });
-});
-
-// Chame initAdminChat() dentro da função attachListeners() existente
-
-
 
         function closeModal(modal) {
             const innerDiv = modal.querySelector('div[class*="transform"]');
@@ -1293,6 +1128,23 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
             });
         }
         
+        function renderAuditLog(logs) {
+            const tbody = document.getElementById('audit-log-body');
+            const placeholder = document.getElementById('audit-log-placeholder');
+            tbody.innerHTML = '';
+            placeholder.classList.toggle('hidden', logs.length > 0);
+            
+            logs.sort((a,b) => b.timestamp.toMillis() - a.timestamp.toMillis()).forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 text-sm text-gray-500">${log.timestamp.toDate().toLocaleString('pt-BR')}</td>
+                    <td class="px-6 py-4 font-medium">${log.operator}</td>
+                    <td class="px-6 py-4">${log.details}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
 
         function updateDashboard() {
             if (!document.getElementById('top-items-chart')) return;
@@ -1664,8 +1516,7 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
             unsubscribeCategories = attach('categories', data => { localCategories = data; renderCategories(data); });
             unsubscribeItens = attach('itens', data => { localItens = data; renderItens(data); updateDashboard(); });
             unsubscribeRetiradas = attach('retiradas', data => { allRetiradas = data; renderRetiradas(); updateDashboard(); });
-            
-            initAdminChat();
+            unsubscribeAuditLog = attach('audit_log', data => { auditLog = data; renderAuditLog(data); });
             
             unsubscribeSolicitacoes = attach('solicitacoes', data => {
                 localSolicitacoes = data;
@@ -1689,10 +1540,15 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
             if (unsubscribeCategories) unsubscribeCategories();
             if (unsubscribeItens) unsubscribeItens();
             if (unsubscribeRetiradas) unsubscribeRetiradas();
+            if (unsubscribeAuditLog) unsubscribeAuditLog();
             if (unsubscribeSolicitacoes) unsubscribeSolicitacoes();
             if (unsubscribePurchaseRequests) unsubscribePurchaseRequests();
         }
-    
+        
+        async function logAction(action, details) {
+            try { await addDoc(getCollectionRef('audit_log'), { operator: currentUser.name || 'Sistema', action, details, timestamp: serverTimestamp() }); }
+            catch(e) { console.error("Error logging action:", e); }
+        }
         
         async function addItem(name, initialQuantity, categoryId = "") { 
             try { 
@@ -1741,7 +1597,8 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
         async function deleteCategory(id, name) { showConfirmModal('Excluir Categoria', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('categories', id)); logAction('CATEGORIA_EXCLUIDA', `Categoria "${name}" excluída.`); showToast(`Categoria excluída.`, 'success'); } catch(e) { console.error("Erro ao excluir categoria:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function deleteOperator(id, name) { showConfirmModal('Excluir Operador', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('operators', id)); logAction('OPERADOR_EXCLUIDO', `Operador "${name}" foi excluído.`); showToast(`Operador excluído.`, 'success'); } catch(e) { console.error("Erro ao excluir operador:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function finalizeRetirada(id) { try { await updateDoc(getDocRef('retiradas', id), { status: 'Concluído com Pendência' }); logAction('RETIRADA_FINALIZADA', `Retirada ID ${id.substring(0,5)}... finalizada.`); showToast(`Retirada finalizada.`, 'success'); } catch(e) { console.error("Erro ao finalizar retirada:", e); showToast("Erro ao finalizar.", 'error'); }}
-    
+        async function clearAuditLog() { showConfirmModal('Limpar Histórico?', 'Esta ação é irreversível e apagará todos os registros de auditoria.', async () => { try { const logSnaps = await getDocs(getCollectionRef('audit_log')); const batch = writeBatch(db); logSnaps.forEach(doc => batch.delete(doc.ref)); await batch.commit(); logAction('HISTORICO_APAGADO', 'Todo o histórico de alterações foi apagado.'); showToast('Histórico de alterações apagado.', 'success'); } catch (e) { console.error("Erro ao limpar histórico:", e); showToast("Erro ao limpar histórico.", 'error'); } });}
+        
         async function saveRetirada(data) {
             try {
                 const batch = writeBatch(db);
@@ -1930,8 +1787,8 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
             document.getElementById('logout-btn').addEventListener('click', () => {
                 currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
                 detachListeners();
-                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; localOperators = []; localSolicitacoes = []; localPurchaseRequests = [];
-                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderOperators([]); renderSolicitacoes(); renderPurchaseRequests(); renderApprovals(); renderPurchaseHistory();
+                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; auditLog = []; localOperators = []; localSolicitacoes = []; localPurchaseRequests = [];
+                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderAuditLog([]); renderOperators([]); renderSolicitacoes(); renderPurchaseRequests(); renderApprovals(); renderPurchaseHistory();
                 updateSolicitacoesBadge();
                 updatePurchaseRequestsBadge();
                 updateApprovalsBadge();
@@ -2015,6 +1872,7 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
             ['item-filter', 'category-filter-select'].forEach(id => document.getElementById(id).addEventListener('input', () => renderItens(localItens)));
             
             document.getElementById('clear-filter-btn').addEventListener('click', () => { ['filter-date', 'filter-professor', 'filter-item'].forEach(id => document.getElementById(id).value = ''); renderRetiradas(); });
+            document.getElementById('clear-history-btn').addEventListener('click', clearAuditLog);
             
             document.getElementById('nova-retirada-btn').addEventListener('click', () => { 
                 currentRetirada = null; 
@@ -2038,8 +1896,6 @@ document.getElementById('admin-chat-form').addEventListener('submit', async (e) 
                 renderItemAccordionInModal();
                 openModal(document.getElementById('retirada-modal')); 
             });
-
-            
 
             document.getElementById('retirada-professor-input').addEventListener('input', (e) => {
                 const value = e.target.value;
