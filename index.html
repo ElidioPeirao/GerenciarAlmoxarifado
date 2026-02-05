@@ -657,24 +657,37 @@
             </form>
         </div>
     </div>
-    <div id="devolucao-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
-        <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-2xl transform transition-all -translate-y-full">
-             <h2 class="text-2xl font-bold mb-6">Registrar Devolução</h2>
-             <form id="devolucao-form">
-                 <input type="hidden" id="devolucao-id">
-                 <p class="mb-4">Colaborador: <strong id="devolucao-professor-name"></strong></p>
-                 <div id="devolucao-itens-list" class="space-y-4"></div>
-                 <div class="mt-6">
-                     <label for="devolucao-observacao" class="block text-sm font-medium text-gray-700">Observação (para devoluções parciais)</label>
-                     <textarea id="devolucao-observacao" rows="3" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" placeholder="Ex: Um item foi danificado."></textarea>
-                 </div>
-                 <div class="flex justify-end gap-4 mt-8">
-                     <button type="button" id="cancel-devolucao-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">Cancelar</button>
-                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Confirmar Devolução</button>
-                 </div>
-             </form>
+    
+<div id="devolucao-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl transform transition-all -translate-y-full max-h-[90vh] flex flex-col">
+            
+            <div class="p-6 border-b flex-shrink-0">
+                <h2 class="text-2xl font-bold text-gray-700">Registrar Devolução</h2>
+            </div>
+
+            <form id="devolucao-form" class="flex flex-col flex-grow overflow-hidden">
+                <input type="hidden" id="devolucao-id">
+                
+                <div class="p-6 overflow-y-auto flex-grow">
+                    <p class="mb-4 text-gray-700">Colaborador: <strong id="devolucao-professor-name" class="text-blue-600"></strong></p>
+                    
+                    <div id="devolucao-itens-list" class="space-y-4 border-t border-b py-4 bg-gray-50 rounded px-2">
+                        </div>
+
+                    <div class="mt-6">
+                        <label for="devolucao-observacao" class="block text-sm font-medium text-gray-700">Observação (para devoluções parciais)</label>
+                        <textarea id="devolucao-observacao" rows="3" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Um item foi danificado."></textarea>
+                    </div>
+                </div>
+
+                <div class="p-4 border-t bg-gray-50 flex justify-end gap-4 flex-shrink-0 rounded-b-lg">
+                    <button type="button" id="cancel-devolucao-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Cancelar</button>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Confirmar Devolução</button>
+                </div>
+            </form>
         </div>
     </div>
+
     <div id="confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
         <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm">
             <h3 id="confirm-title" class="text-lg font-bold">Confirmar Ação</h3>
