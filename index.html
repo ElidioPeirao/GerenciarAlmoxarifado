@@ -620,6 +620,7 @@
                     
                     <input type="hidden" id="retirada-id">
                     <input type="hidden" id="solicitacao-id-carrier">
+                    <input type="hidden" id="solicitacao-periodo-carrier">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="relative">
@@ -678,6 +679,20 @@
                         <label for="devolucao-observacao" class="block text-sm font-medium text-gray-700">Observação (para devoluções parciais)</label>
                         <textarea id="devolucao-observacao" rows="3" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Um item foi danificado."></textarea>
                     </div>
+                    <div class="mt-6">
+    <label for="devolucao-observacao" class="block text-sm font-medium text-gray-700">Observação (para devoluções parciais)</label>
+    <textarea id="devolucao-observacao" rows="3" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: Um item foi danificado."></textarea>
+</div>
+
+<div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+    <label class="flex items-start gap-2 text-sm font-medium text-red-800 cursor-pointer">
+        <input type="checkbox" id="devolucao-dar-baixa" class="mt-1 h-4 w-4 rounded border-red-300 text-red-600 focus:ring-red-500">
+        <div>
+            <span>Dar baixa definitiva nos itens NÃO devolvidos?</span>
+            <p class="text-xs text-red-600 font-normal mt-1">Marque isso se os itens faltantes foram consumidos (ex: cola) ou quebrados. Isso descontará do Estoque Total da escola, impedindo novos agendamentos.</p>
+        </div>
+    </label>
+</div>
                 </div>
 
                 <div class="p-4 border-t bg-gray-50 flex justify-end gap-4 flex-shrink-0 rounded-b-lg">
@@ -1657,32 +1672,65 @@
             });
         }
         
-        async function saveDevolucao(data) {
-            try {
-                const batch = writeBatch(db);
-                const retiradaRef = getDocRef('retiradas', data.id);
-                let totalRetirado = 0, totalDevolvidoAcumulado = 0;
-                const updatedItens = currentRetirada.itens.map(retiradaItem => {
-                    const devItem = data.itensDevolvidos.find(d => d.itemId === retiradaItem.itemId);
-                    const qtyDevolvidaAgora = devItem ? Number(devItem.quantidade) : 0;
-                    
-                    if (qtyDevolvidaAgora > 0) {
-                        const itemRef = getDocRef('itens', retiradaItem.itemId);
-                        batch.update(itemRef, { quantity: increment(qtyDevolvidaAgora) });
-                    }
+async function saveDevolucao(data) {
+    try {
+        const batch = writeBatch(db);
+        const retiradaRef = getDocRef('retiradas', data.id);
+        let totalRetirado = 0, totalDevolvidoAcumulado = 0;
+        
+        const updatedItens = currentRetirada.itens.map(retiradaItem => {
+            const devItem = data.itensDevolvidos.find(d => d.itemId === retiradaItem.itemId);
+            const qtyDevolvidaAgora = devItem ? Number(devItem.quantidade) : 0;
+            const itemRef = getDocRef('itens', retiradaItem.itemId);
+            
+            let novaQtdDevolvida = (retiradaItem.quantidadeDevolvida || 0) + qtyDevolvidaAgora;
+            const pendente = retiradaItem.quantidade - novaQtdDevolvida;
 
-                    const novaQtdDevolvida = (retiradaItem.quantidadeDevolvida || 0) + qtyDevolvidaAgora;
-                    totalRetirado += retiradaItem.quantidade; totalDevolvidoAcumulado += novaQtdDevolvida;
-                    return { ...retiradaItem, quantidadeDevolvida: novaQtdDevolvida };
-                });
-                const status = totalDevolvidoAcumulado >= totalRetirado ? 'Devolvido Totalmente' : 'Devolvido Parcialmente';
-                batch.update(retiradaRef, { itens: updatedItens, status, observacao: data.observacao, dataDevolucao: new Date().toISOString() });
-                await batch.commit(); 
-                logAction('DEVOLUCAO_REGISTRADA', `Devolução registrada para "${currentRetirada.professorName}".`);
-                showToast('Devolução registrada!', 'success');
-                currentRetirada = null;
-            } catch(e) { console.error("Erro ao salvar devolução:", e); showToast('Erro ao salvar devolução.', 'error'); }
+            let itemUpdates = {};
+            
+            // 1. Devolve à prateleira física o que o professor entregou de volta
+            if (qtyDevolvidaAgora > 0) {
+                itemUpdates.quantity = increment(qtyDevolvidaAgora); 
+            }
+            
+            // 2. A AUTOMAÇÃO: Se sobrou pendência e o operador marcou "Dar Baixa"
+            if (data.darBaixa && pendente > 0) {
+                itemUpdates.totalQuantity = increment(-pendente); // Tira do patrimônio total da escola
+                novaQtdDevolvida = retiradaItem.quantidade; // Força como "resolvido" nesta retirada
+            }
+
+            if (Object.keys(itemUpdates).length > 0) {
+                batch.update(itemRef, itemUpdates);
+            }
+
+            totalRetirado += retiradaItem.quantidade; 
+            totalDevolvidoAcumulado += novaQtdDevolvida;
+            
+            return { ...retiradaItem, quantidadeDevolvida: novaQtdDevolvida };
+        });
+        
+        // Define o status final
+        let status = 'Devolvido Parcialmente';
+        if (totalDevolvidoAcumulado >= totalRetirado) {
+            status = data.darBaixa ? 'Concluído com Pendência' : 'Devolvido Totalmente';
         }
+
+        batch.update(retiradaRef, { 
+            itens: updatedItens, 
+            status, 
+            observacao: data.observacao, 
+            dataDevolucao: new Date().toISOString() 
+        });
+        
+        await batch.commit(); 
+        logAction('DEVOLUCAO_REGISTRADA', `Devolução registrada. Baixa Definitiva: ${data.darBaixa ? 'Sim' : 'Não'}`);
+        showToast('Devolução registrada!', 'success');
+        currentRetirada = null;
+    } catch(e) { 
+        console.error("Erro ao salvar devolução:", e); 
+        showToast('Erro ao salvar devolução.', 'error'); 
+    }
+}
 
         function generatePDF() {
             const { jsPDF } = window.jspdf;
@@ -1959,7 +2007,16 @@
                 const professorId = document.getElementById('retirada-professor-id').value;
                 const professorName = document.getElementById('retirada-professor-input').value;
                 if (!professorId) { showMessageModal('Erro', 'Colaborador inválido. Selecione um da lista ou adicione um novo.'); return; }
-                const data = { id: document.getElementById('retirada-id').value, professorName, professorId, dataRetirada: document.getElementById('retirada-date').value, itens: items, status: currentRetirada ? currentRetirada.status : 'Pendente', operator: currentRetirada ? currentRetirada.operator : currentUser.name }; if(data.id && currentRetirada) { data.itens.forEach(ni=>{ const oi=currentRetirada.itens.find(i=>i.itemId===ni.itemId); if(oi) ni.quantidadeDevolvida=oi.quantidadeDevolvida||0; }); } 
+                const data = { 
+    id: document.getElementById('retirada-id').value, 
+    professorName, 
+    professorId, 
+    dataRetirada: document.getElementById('retirada-date').value, 
+    periodo: document.getElementById('solicitacao-periodo-carrier').value || 'Integral', // <--- CAMPO NOVO
+    itens: items, 
+    status: currentRetirada ? currentRetirada.status : 'Pendente', 
+    operator: currentRetirada ? currentRetirada.operator : currentUser.name 
+};
                 
                 const solicitacaoIdCarrier = document.getElementById('solicitacao-id-carrier');
                 const solicitacaoId = solicitacaoIdCarrier.value;
@@ -1985,6 +2042,7 @@
                 if (target.classList.contains('edit-retirada-btn')) { 
                     document.getElementById('modal-title').textContent = 'Editar Retirada'; 
                     document.getElementById('retirada-id').value = id; 
+                    document.getElementById('solicitacao-id-carrier').value = '';
                     const professorDatalist = document.getElementById('professores-datalist');
                     professorDatalist.innerHTML = '';
                     localProfessores.forEach(prof => { const option = document.createElement('option'); option.value = prof.name; option.dataset.id = prof.id; professorDatalist.appendChild(option); });
@@ -2004,11 +2062,16 @@
                     renderItemAccordionInModal();
                     openModal(document.getElementById('retirada-modal')); 
                 } 
-                if (target.classList.contains('devolucao-btn')) { 
-                    document.getElementById('devolucao-id').value = id; 
-                    document.getElementById('devolucao-professor-name').textContent = currentRetirada.professorName; 
-                    document.getElementById('devolucao-observacao').value = currentRetirada.observacao || ''; 
-                    const list = document.getElementById('devolucao-itens-list'); 
+if (target.classList.contains('devolucao-btn')) { 
+    document.getElementById('devolucao-id').value = id; 
+    document.getElementById('devolucao-professor-name').textContent = currentRetirada.professorName; 
+    document.getElementById('devolucao-observacao').value = currentRetirada.observacao || ''; 
+    
+    // 👇 ADICIONE ESTA LINHA:
+    document.getElementById('devolucao-dar-baixa').checked = false;
+
+    const list = document.getElementById('devolucao-itens-list'); 
+    // ... resto do código continua igual
                     list.innerHTML = ''; 
                     currentRetirada.itens.forEach(item => { 
                         const maxDev = item.quantidade - (item.quantidadeDevolvida || 0); 
@@ -2024,7 +2087,22 @@
                 }
             });
 
-            document.getElementById('devolucao-form').addEventListener('submit', async (e) => { e.preventDefault(); const itensDevolvidos = Array.from(document.querySelectorAll('.devolucao-item-row .devolucao-quantity')).map(i => ({ itemId: i.dataset.itemId, quantidade: Number(i.value) })).filter(i => i.quantidade > 0); await saveDevolucao({ id: document.getElementById('devolucao-id').value, itensDevolvidos, observacao: document.getElementById('devolucao-observacao').value }); closeModal(document.getElementById('devolucao-modal')); });
+            document.getElementById('devolucao-form').addEventListener('submit', async (e) => { 
+    e.preventDefault(); 
+    const itensDevolvidos = Array.from(document.querySelectorAll('.devolucao-item-row .devolucao-quantity'))
+        .map(i => ({ itemId: i.dataset.itemId, quantidade: Number(i.value) }))
+        .filter(i => i.quantidade >= 0); 
+        
+    await saveDevolucao({ 
+        id: document.getElementById('devolucao-id').value, 
+        itensDevolvidos, 
+        observacao: document.getElementById('devolucao-observacao').value,
+        darBaixa: document.getElementById('devolucao-dar-baixa').checked // Envia a decisão de dar baixa
+    }); 
+    
+    closeModal(document.getElementById('devolucao-modal')); 
+});
+
             
             document.getElementById('solicitacoes-table-body').addEventListener('click', async (e) => {
                 const button = e.target.closest('button');
@@ -2051,6 +2129,7 @@
                     document.getElementById('retirada-date').value = new Date().toISOString().slice(0, 10);
                     
                     document.getElementById('solicitacao-id-carrier').value = solicitacao.id;
+                    document.getElementById('solicitacao-periodo-carrier').value = solicitacao.periodo || 'Integral';
 
                     const list = document.getElementById('retirada-itens-list');
                     list.innerHTML = '';
