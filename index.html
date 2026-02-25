@@ -6,11 +6,8 @@
     <title>Gerenciamento de Almoxarifado</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
@@ -109,17 +106,6 @@
                         <i class="fas fa-inbox mr-2"></i>Solicitações de Retirada
                         <span id="solicitacoes-badge" class="hidden absolute top-2 right-[-8px] bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
                     </button>
-                    <button id="approvals-tab-btn" data-tab="approvals" class="tab-button hidden relative py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
-                        <i class="fas fa-check-double mr-2"></i>Aprovações de Compra
-                        <span id="approvals-badge" class="hidden absolute top-2 right-[-8px] bg-orange-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </button>
-                    <button data-tab="compras" class="tab-button relative py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
-                        <i class="fas fa-shopping-cart mr-2"></i>Pedidos de Compra
-                        <span id="compras-badge" class="hidden absolute top-2 right-[-8px] bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </button>
-                    <button data-tab="purchase-history" class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
-                        <i class="fas fa-archive mr-2"></i>Histórico de Compras
-                    </button>
                     <button data-tab="retiradas" class="tab-button py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-blue-600 hover:border-blue-300">
                         <i class="fas fa-dolly mr-2"></i>Retiradas
                     </button>
@@ -186,73 +172,6 @@
                             <tbody id="solicitacoes-table-body"></tbody>
                         </table>
                         <p id="solicitacoes-placeholder" class="text-center py-8 text-gray-400">Nenhuma solicitação de retirada pendente.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-content-approvals" class="tab-pane hidden">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-6">Aprovações de Compra Pendentes</h2>
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left">Data</th>
-                                    <th class="px-4 py-3 text-left">Solicitante</th>
-                                    <th class="px-4 py-3 text-left">Item</th>
-                                    <th class="px-4 py-3 text-left">Descrição</th>
-                                    <th class="px-4 py-3 text-left">Link</th>
-                                    <th class="px-4 py-3 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="approvals-table-body"></tbody>
-                        </table>
-                        <p id="approvals-placeholder" class="text-center py-8 text-gray-400">Nenhuma solicitação de compra para aprovar.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-content-compras" class="tab-pane hidden">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-6">Pedidos de Compra Aprovados</h2>
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left">Data</th>
-                                    <th class="px-4 py-3 text-left">Solicitante</th>
-                                    <th class="px-4 py-3 text-left">Item</th>
-                                    <th class="px-4 py-3 text-left">Descrição</th>
-                                    <th class="px-4 py-3 text-left">Link</th>
-                                    <th class="px-4 py-3 text-center">Status</th>
-                                    <th class="px-4 py-3 text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="compras-table-body"></tbody>
-                        </table>
-                        <p id="compras-placeholder" class="text-center py-8 text-gray-400">Nenhum pedido de compra encontrado.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-content-purchase-history" class="tab-pane hidden">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-6">Histórico de Pedidos de Compra</h2>
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left">Data Solicitação</th>
-                                    <th class="px-4 py-3 text-left">Solicitante</th>
-                                    <th class="px-4 py-3 text-left">Item</th>
-                                    <th class="px-4 py-3 text-center">Status Final</th>
-                                    <th class="px-4 py-3 text-left">Aprovador</th>
-                                    <th class="px-4 py-3 text-left">Data Decisão</th>
-                                </tr>
-                            </thead>
-                            <tbody id="purchase-history-table-body"></tbody>
-                        </table>
-                        <p id="purchase-history-placeholder" class="text-center py-8 text-gray-400">Nenhum pedido de compra finalizado.</p>
                     </div>
                 </div>
             </div>
@@ -407,6 +326,12 @@
                                    <div class="space-y-4">
                                        <input type="text" id="operator-new-name" placeholder="Nome do Operador" class="w-full p-2 border border-gray-300 rounded-md" required>
                                        <input type="text" id="operator-new-registration" placeholder="Matrícula" class="w-full p-2 border border-gray-300 rounded-md" required>
+
+                                       <label class="flex items-center gap-2 mb-3 font-bold text-red-600 border border-red-200 bg-red-50 p-2 rounded-md">
+                                            <input type="checkbox" id="operator-is-admin" class="h-4 w-4 rounded text-red-600 focus:ring-red-500">
+                                            Acesso Total (Administrador)
+                                        </label>
+
                                        <fieldset class="mt-4 border p-3 rounded-md">
                                            <legend class="text-sm font-semibold px-1">Permissões</legend>
                                            <div class="space-y-2 text-sm">
@@ -542,6 +467,12 @@
                         <label for="edit-operator-registration" class="block text-sm font-medium text-gray-700">Matrícula</label>
                         <input type="text" id="edit-operator-registration" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
                     </div>
+
+                    <label class="flex items-center gap-2 mb-3 font-bold text-red-600 border border-red-200 bg-red-50 p-2 rounded-md">
+                        <input type="checkbox" id="edit-operator-is-admin" class="h-4 w-4 rounded text-red-600 focus:ring-red-500">
+                        Acesso Total (Administrador)
+                    </label>
+
                     <fieldset class="mt-4 border p-3 rounded-md">
                         <legend class="text-sm font-semibold px-1">Permissões</legend>
                         <div class="space-y-2 text-sm">
@@ -673,7 +604,7 @@
                     <p class="mb-4 text-gray-700">Colaborador: <strong id="devolucao-professor-name" class="text-blue-600"></strong></p>
                     
                     <div id="devolucao-itens-list" class="space-y-4 border-t border-b py-4 bg-gray-50 rounded px-2">
-                        </div>
+                    </div>
 
                     <div class="mt-6">
                         <label for="devolucao-observacao" class="block text-sm font-medium text-gray-700">Observação (para devoluções parciais)</label>
@@ -723,9 +654,9 @@
         const appId = 'almoxarifado-app-global';
 
         let app, db;
-        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeAuditLog, unsubscribeOperators, unsubscribeSolicitacoes, unsubscribePurchaseRequests;
+        let unsubscribeProfessores, unsubscribeItens, unsubscribeRetiradas, unsubscribeCategories, unsubscribeAuditLog, unsubscribeOperators, unsubscribeSolicitacoes;
         
-        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], auditLog = [], localOperators = [], localSolicitacoes = [], localPurchaseRequests = [];
+        let localProfessores = [], localItens = [], localCategories = [], allRetiradas = [], auditLog = [], localOperators = [], localSolicitacoes = [];
         let currentRetirada = null;
         let currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
         let topItemsChart, topProfessorsChart;
@@ -810,7 +741,6 @@
             const tabsContent = document.getElementById('tabs-content');
             const loggedOutView = document.getElementById('logged-out-view');
             const supervisorBadge = document.getElementById('supervisor-badge');
-            const approvalsTabBtn = document.getElementById('approvals-tab-btn');
             const supervisorCheckboxContainer = document.getElementById('supervisor-checkbox-container');
             const editSupervisorCheckboxContainer = document.getElementById('edit-supervisor-checkbox-container');
 
@@ -831,16 +761,12 @@
             loggedOutView.classList.toggle('hidden', isLoggedIn);
 
             adminTabBtn.classList.toggle('hidden', !isAdmin);
-            approvalsTabBtn.classList.toggle('hidden', !isSupervisor);
             document.getElementById('clear-history-btn').classList.toggle('hidden', !isAdmin);
             
             if(supervisorCheckboxContainer) supervisorCheckboxContainer.classList.toggle('hidden', !isAdmin);
             if(editSupervisorCheckboxContainer) editSupervisorCheckboxContainer.classList.toggle('hidden', !isAdmin);
 
             if (!isAdmin && document.querySelector('.tab-button[data-tab="admin"].active')) {
-                document.querySelector('.tab-button[data-tab="dashboard"]').click();
-            }
-            if (!isSupervisor && document.querySelector('.tab-button[data-tab="approvals"].active')) {
                 document.querySelector('.tab-button[data-tab="dashboard"]').click();
             }
 
@@ -858,7 +784,6 @@
             document.querySelector('button[data-tab="itens"]').style.display = canManageItems ? 'block' : 'none';
             document.querySelector('button[data-tab="professores"]').style.display = canManageProfessors ? 'block' : 'none';
             document.querySelector('button[data-tab="solicitacoes"]').style.display = canManageRetiradas ? 'block' : 'none';
-            document.querySelector('button[data-tab="compras"]').style.display = canManageItems ? 'block' : 'none';
 
             const activeTab = document.querySelector('.tab-button.active');
             if (activeTab && activeTab.style.display === 'none') {
@@ -909,9 +834,12 @@
                     <i class="fas ${perms.canManageProfessors ? 'fa-users text-green-500' : 'fa-users text-gray-300'} ml-2" title="Gerenciar Colaboradores"></i>
                     <i class="fas ${perms.canGenerateReports ? 'fa-file-pdf text-green-500' : 'fa-file-pdf text-gray-300'} ml-2" title="Gerar Relatórios"></i>
                 `;
+                
+                const adminBadge = op.isAdmin ? '<span class="ml-2 bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded-full uppercase">Admin</span>' : '';
+                
                 li.innerHTML = `
                     <div>
-                        <span class="font-semibold">${op.name}</span>
+                        <span class="font-semibold">${op.name} ${adminBadge}</span>
                         <span class="text-sm text-gray-500 ml-2">(Matrícula: ${op.registration})</span>
                         <div class="text-xs mt-1 flex items-center">${permsHtml}</div>
                     </div>
@@ -1277,165 +1205,6 @@
             });
         }
         
-        function updateApprovalsBadge() {
-            const badge = document.getElementById('approvals-badge');
-            const pendingCount = localPurchaseRequests.filter(s => s.status === 'Pendente de Aprovação').length;
-            
-            if (pendingCount > 0) {
-                badge.textContent = pendingCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function renderApprovals() {
-            const tbody = document.getElementById('approvals-table-body');
-            const placeholder = document.getElementById('approvals-placeholder');
-            tbody.innerHTML = '';
-
-            const pendingApproval = localPurchaseRequests
-                .filter(s => s.status === 'Pendente de Aprovação')
-                .sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
-
-            placeholder.classList.toggle('hidden', pendingApproval.length > 0);
-
-            pendingApproval.forEach(request => {
-                const tr = document.createElement('tr');
-                tr.className = 'border-b hover:bg-gray-50 cursor-pointer request-row';
-                tr.dataset.requestId = request.id;
-                
-                const linkHtml = request.itemLink 
-                    ? `<a href="${request.itemLink}" target="_blank" class="text-blue-500 hover:underline"><i class="fas fa-link"></i> Ver Link</a>` 
-                    : '<span>N/A</span>';
-
-                const actionsHtml = `
-                    <div class="flex items-center justify-center gap-2">
-                        <button data-id="${request.id}" data-action="approve" class="approval-action-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg text-xs" title="Aprovar Pedido">
-                            <i class="fas fa-check"></i> Aprovar
-                        </button>
-                        <button data-id="${request.id}" data-action="reject" class="approval-action-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg text-xs" title="Rejeitar Pedido">
-                            <i class="fas fa-times"></i> Rejeitar
-                        </button>
-                    </div>
-                `;
-
-                tr.innerHTML = `
-                    <td class="px-4 py-4 text-gray-600 whitespace-nowrap">${request.timestamp?.toDate().toLocaleDateString('pt-BR') || 'N/A'}</td>
-                    <td class="px-4 py-4 font-medium">${request.solicitanteName || 'N/A'}</td>
-                    <td class="px-4 py-4 font-semibold text-gray-800">${request.itemName || 'N/A'}</td>
-                    <td class="px-4 py-4 text-sm text-gray-600 max-w-xs truncate" title="${request.itemDescricao || ''}">${request.itemDescricao || 'N/A'}</td>
-                    <td class="px-4 py-4 text-sm">${linkHtml}</td>
-                    <td class="px-4 py-4 text-center">${actionsHtml}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        function updatePurchaseRequestsBadge() {
-            const badge = document.getElementById('compras-badge');
-            const pendingCount = localPurchaseRequests.filter(s => s.status === 'Aprovado' || s.status === 'Em Análise' || s.status === 'Comprado').length;
-            
-            if (pendingCount > 0) {
-                badge.textContent = pendingCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function renderPurchaseRequests() {
-            const tbody = document.getElementById('compras-table-body');
-            const placeholder = document.getElementById('compras-placeholder');
-            tbody.innerHTML = '';
-
-            const activeRequests = localPurchaseRequests
-                .filter(s => s.status === 'Aprovado' || s.status === 'Em Análise' || s.status === 'Comprado')
-                .sort((a, b) => (a.timestamp?.toMillis() || 0) - (b.timestamp?.toMillis() || 0));
-
-            placeholder.classList.toggle('hidden', activeRequests.length > 0);
-
-            const statusConfig = {
-                'Aprovado': { text: 'Aprovado', color: 'green' },
-                'Em Análise': { text: 'Em Análise', color: 'yellow' },
-                'Comprado': { text: 'Comprado', color: 'blue' },
-                'Entregue': { text: 'Entregue', color: 'gray' },
-                'Rejeitada': { text: 'Rejeitado', color: 'red' }
-            };
-
-            activeRequests.forEach(request => {
-                const currentStatus = request.status || 'Pendente';
-                const statusInfo = statusConfig[currentStatus] || { text: currentStatus, color: 'gray' };
-
-                const tr = document.createElement('tr');
-                tr.className = 'border-b hover:bg-gray-50 cursor-pointer request-row';
-                tr.dataset.requestId = request.id;
-                
-                const linkHtml = request.itemLink 
-                    ? `<a href="${request.itemLink}" target="_blank" class="text-blue-500 hover:underline"><i class="fas fa-link"></i> Ver Link</a>` 
-                    : '<span>N/A</span>';
-
-                const actionsHtml = `
-                    <div class="flex items-center justify-center gap-1">
-                        <button data-id="${request.id}" data-status="Em Análise" class="status-btn bg-yellow-100 text-yellow-800 hover:bg-yellow-200 font-semibold py-1 px-2 rounded-md text-xs" title="Marcar como 'Em Análise'">Análise</button>
-                        <button data-id="${request.id}" data-status="Comprado" class="status-btn bg-blue-100 text-blue-800 hover:bg-blue-200 font-semibold py-1 px-2 rounded-md text-xs" title="Marcar como 'Comprado'">Comprado</button>
-                        <button data-id="${request.id}" data-status="Entregue" class="status-btn bg-green-100 text-green-800 hover:bg-green-200 font-semibold py-1 px-2 rounded-md text-xs" title="Marcar como 'Entregue'">Entregue</button>
-                    </div>
-                `;
-
-                tr.innerHTML = `
-                    <td class="px-4 py-4 text-gray-600 whitespace-nowrap">${request.timestamp?.toDate().toLocaleDateString('pt-BR') || 'N/A'}</td>
-                    <td class="px-4 py-4 font-medium">${request.solicitanteName || 'N/A'}</td>
-                    <td class="px-4 py-4 font-semibold text-gray-800">${request.itemName || 'N/A'}</td>
-                    <td class="px-4 py-4 text-sm text-gray-600 max-w-xs truncate" title="${request.itemDescricao || ''}">${request.itemDescricao || 'N/A'}</td>
-                    <td class="px-4 py-4 text-sm">${linkHtml}</td>
-                    <td class="px-4 py-4 text-center">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${statusInfo.color}-100 text-${statusInfo.color}-800">${statusInfo.text}</span>
-                    </td>
-                    <td class="px-4 py-4 text-center">
-                        ${actionsHtml}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        function renderPurchaseHistory() {
-            const tbody = document.getElementById('purchase-history-table-body');
-            const placeholder = document.getElementById('purchase-history-placeholder');
-            tbody.innerHTML = '';
-
-            const finishedRequests = localPurchaseRequests
-                .filter(s => s.status === 'Entregue' || s.status === 'Rejeitado')
-                .sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
-
-            placeholder.classList.toggle('hidden', finishedRequests.length > 0);
-
-            const statusConfig = {
-                'Entregue': { text: 'Entregue', color: 'green' },
-                'Rejeitado': { text: 'Rejeitado', color: 'red' }
-            };
-
-            finishedRequests.forEach(request => {
-                const statusInfo = statusConfig[request.status] || { text: request.status, color: 'gray' };
-                const tr = document.createElement('tr');
-                tr.className = 'border-b hover:bg-gray-50 cursor-pointer request-row';
-                tr.dataset.requestId = request.id;
-
-                tr.innerHTML = `
-                    <td class="px-4 py-4 text-gray-600 whitespace-nowrap">${request.timestamp?.toDate().toLocaleDateString('pt-BR') || 'N/A'}</td>
-                    <td class="px-4 py-4 font-medium">${request.solicitanteName || 'N/A'}</td>
-                    <td class="px-4 py-4 font-semibold text-gray-800">${request.itemName || 'N/A'}</td>
-                    <td class="px-4 py-4 text-center">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${statusInfo.color}-100 text-${statusInfo.color}-800">${statusInfo.text}</span>
-                    </td>
-                    <td class="px-4 py-4">${request.aprovador || 'N/A'}</td>
-                    <td class="px-4 py-4 text-gray-600">${request.dataAprovacao?.toDate().toLocaleDateString('pt-BR') || 'N/A'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
         function createItemSelectionRow(item) {
             const list = document.getElementById('retirada-itens-list');
             const placeholder = document.getElementById('retirada-itens-placeholder');
@@ -1537,15 +1306,6 @@
                 renderSolicitacoes();
                 updateSolicitacoesBadge();
             });
-            
-            unsubscribePurchaseRequests = attach('solicitacoes_compra', data => {
-                localPurchaseRequests = data;
-                renderPurchaseRequests();
-                updatePurchaseRequestsBadge();
-                renderApprovals();
-                updateApprovalsBadge();
-                renderPurchaseHistory();
-            });
         }
 
         function detachListeners() {
@@ -1556,7 +1316,6 @@
             if (unsubscribeRetiradas) unsubscribeRetiradas();
             if (unsubscribeAuditLog) unsubscribeAuditLog();
             if (unsubscribeSolicitacoes) unsubscribeSolicitacoes();
-            if (unsubscribePurchaseRequests) unsubscribePurchaseRequests();
         }
         
         async function logAction(action, details) {
@@ -1602,11 +1361,42 @@
             }
         }
 
-        async function addOperator(name, registration, permissions) { try { await addDoc(getCollectionRef('operators'), { name, registration, permissions }); logAction('OPERADOR_CRIADO', `Operador "${name}" foi adicionado.`); showToast(`Operador "${name}" adicionado.`, 'success'); } catch(e) { console.error("Erro ao adicionar operador:", e); showToast("Erro ao salvar o operador.", 'error'); }}
+        async function addOperator(name, registration, permissions, isAdmin = false) { 
+            try { 
+                await addDoc(getCollectionRef('operators'), { name, registration, permissions, isAdmin }); 
+                logAction('OPERADOR_CRIADO', `Operador "${name}" foi adicionado.`); 
+                showToast(`Operador "${name}" adicionado.`, 'success'); 
+            } catch(e) { console.error(e); }
+        }
+
         async function updateOperator(id, data) { try { await updateDoc(getDocRef('operators', id), data); logAction('OPERADOR_ALTERADO', `Operador "${data.name}" foi atualizado.`); showToast(`Operador "${data.name}" atualizado.`, 'success'); } catch (e) { console.error("Erro ao atualizar operador:", e); showToast("Erro ao atualizar o operador.", 'error'); } }
         async function updateItem(id, newData) { try { await updateDoc(getDocRef('itens', id), newData); logAction('ITEM_ALTERADO', `Item "${newData.name}" atualizado.`); showToast(`Item "${newData.name}" atualizado.`, 'success'); } catch (e) { console.error("Erro ao atualizar item:", e); showToast("Erro ao atualizar o item.", 'error'); } }
         async function addCategory(name) { try { await addDoc(getCollectionRef('categories'), { name }); logAction('CATEGORIA_CRIADA', `Categoria "${name}" criada.`); showToast(`Categoria "${name}" criada.`, 'success'); } catch(e) { console.error("Erro ao adicionar categoria:", e); showToast("Erro ao salvar a categoria.", 'error'); }}
-        async function deleteProfessor(id, name) { if (allRetiradas.some(r => r.professorId === id)) { showMessageModal('Ação Bloqueada', `"${name}" não pode ser excluído pois possui retiradas no histórico.`); return; } showConfirmModal('Excluir Colaborador', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('professores', id)); logAction('COLABORADOR_EXCLUIDO', `Colaborador "${name}" foi excluído.`); showToast(`Colaborador "${name}" excluído.`, 'success'); } catch (e) { console.error("Erro ao excluir colaborador:", e); showToast("Erro ao excluir.", 'error'); } }); }
+       
+        async function deleteProfessor(id, name) { 
+            const hasPending = allRetiradas.some(r => r.professorId === id && (r.status === 'Pendente' || r.status === 'Devolvido Parcialmente'));
+            let confirmMessage = `Tem certeza que deseja excluir o colaborador "${name}"?`;
+            
+            if (hasPending) {
+                confirmMessage = `⚠️ ATENÇÃO: "${name}" ainda possui materiais não devolvidos no almoxarifado! Deseja excluir o cadastro mesmo assim?`;
+            }
+
+            showConfirmModal('Excluir Colaborador', confirmMessage, async () => { 
+                try { 
+                    await deleteDoc(getDocRef('professores', id)); 
+                    const logDetail = hasPending 
+                        ? `Colaborador "${name}" foi excluído (Possuía itens pendentes).` 
+                        : `Colaborador "${name}" foi excluído.`;
+                        
+                    logAction('COLABORADOR_EXCLUIDO', logDetail); 
+                    showToast(`Colaborador "${name}" excluído com sucesso.`, 'success'); 
+                } catch (e) { 
+                    console.error("Erro ao excluir colaborador:", e); 
+                    showToast("Erro ao excluir colaborador.", 'error'); 
+                } 
+            }); 
+        }
+
         async function deleteItem(id, name) { if (allRetiradas.some(r => r.itens.some(i => i.itemId === id) && r.status !== 'Devolvido Totalmente' && r.status !== 'Concluído com Pendência')) { showMessageModal('Ação Bloqueada', `"${name}" não pode ser excluído pois está em uma retirada ativa.`); return; } showConfirmModal('Excluir Item', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('itens', id)); logAction('ITEM_EXCLUIDO', `Item "${name}" foi excluído.`); showToast(`Item "${name}" excluído.`, 'success'); } catch(e) { console.error("Erro ao excluir item:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function deleteCategory(id, name) { showConfirmModal('Excluir Categoria', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('categories', id)); logAction('CATEGORIA_EXCLUIDA', `Categoria "${name}" excluída.`); showToast(`Categoria excluída.`, 'success'); } catch(e) { console.error("Erro ao excluir categoria:", e); showToast("Erro ao excluir.", 'error'); } }); }
         async function deleteOperator(id, name) { showConfirmModal('Excluir Operador', `Excluir "${name}"?`, async () => { try { await deleteDoc(getDocRef('operators', id)); logAction('OPERADOR_EXCLUIDO', `Operador "${name}" foi excluído.`); showToast(`Operador excluído.`, 'success'); } catch(e) { console.error("Erro ao excluir operador:", e); showToast("Erro ao excluir.", 'error'); } }); }
@@ -1658,146 +1448,121 @@
             });
         }
         
-async function saveDevolucao(data) {
-    try {
-        const batch = writeBatch(db);
-        const retiradaRef = getDocRef('retiradas', data.id);
-        
-        const updatedItens = currentRetirada.itens.map(retiradaItem => {
-            const devItem = data.itensDevolvidos.find(d => d.itemId === retiradaItem.itemId);
-            const qtyDevolvidaAgora = devItem ? Number(devItem.quantidade) : 0;
-            const itemRef = getDocRef('itens', retiradaItem.itemId);
-            
-            let itemUpdates = {};
-            
-            // 1. Devolve para a prateleira física o que o professor entregou no balcão
-            if (qtyDevolvidaAgora > 0) {
-                itemUpdates.quantity = increment(qtyDevolvidaAgora);
-            }
-            
-            // 2. Calcula o que faltou e DÁ BAIXA AUTOMÁTICA no Estoque Total da escola
-            const pendente = retiradaItem.quantidade - (retiradaItem.quantidadeDevolvida || 0) - qtyDevolvidaAgora;
-            
-            if (pendente > 0) {
-                // Remove definitivamente o item consumido/perdido do sistema
-                itemUpdates.totalQuantity = increment(-pendente);
-            }
-            
-            if (Object.keys(itemUpdates).length > 0) {
-                batch.update(itemRef, itemUpdates);
-            }
-            
-            // Marca o item como 100% resolvido (pois uma parte foi devolvida e o resto dado baixa)
-            return { ...retiradaItem, quantidadeDevolvida: retiradaItem.quantidade };
-        });
-        
-        // Define o status final
-        // Se sobrou pendência (consumo), marca como 'Concluído com Pendência', senão 'Devolvido Totalmente'
-        const teveBaixa = updatedItens.some(i => i.quantidadeDevolvida === i.quantidade && data.itensDevolvidos.find(d => d.itemId === i.itemId)?.quantidade < i.quantidade);
-        const statusFinal = teveBaixa ? 'Concluído com Pendência' : 'Devolvido Totalmente';
+        async function saveDevolucao(data) {
+            try {
+                const batch = writeBatch(db);
+                const retiradaRef = getDocRef('retiradas', data.id);
+                
+                const updatedItens = currentRetirada.itens.map(retiradaItem => {
+                    const devItem = data.itensDevolvidos.find(d => d.itemId === retiradaItem.itemId);
+                    const qtyDevolvidaAgora = devItem ? Number(devItem.quantidade) : 0;
+                    const itemRef = getDocRef('itens', retiradaItem.itemId);
+                    
+                    let itemUpdates = {};
+                    
+                    if (qtyDevolvidaAgora > 0) {
+                        itemUpdates.quantity = increment(qtyDevolvidaAgora);
+                    }
+                    
+                    const pendente = retiradaItem.quantidade - (retiradaItem.quantidadeDevolvida || 0) - qtyDevolvidaAgora;
+                    
+                    if (pendente > 0) {
+                        itemUpdates.totalQuantity = increment(-pendente);
+                    }
+                    
+                    if (Object.keys(itemUpdates).length > 0) {
+                        batch.update(itemRef, itemUpdates);
+                    }
+                    
+                    return { ...retiradaItem, quantidadeDevolvida: retiradaItem.quantidade };
+                });
+                
+                const teveBaixa = updatedItens.some(i => i.quantidadeDevolvida === i.quantidade && data.itensDevolvidos.find(d => d.itemId === i.itemId)?.quantidade < i.quantidade);
+                const statusFinal = teveBaixa ? 'Concluído com Pendência' : 'Devolvido Totalmente';
 
-        batch.update(retiradaRef, { 
-            itens: updatedItens, 
-            status: statusFinal, 
-            observacao: data.observacao, 
-            dataDevolucao: new Date().toISOString() 
-        });
-        
-        await batch.commit(); 
-        logAction('DEVOLUCAO_REGISTRADA', `Devolução/Baixa automática processada para "${currentRetirada.professorName}".`);
-        showToast('Devolução e baixa registradas com sucesso!', 'success');
-        currentRetirada = null;
-    } catch(e) { 
-        console.error("Erro ao salvar devolução:", e); 
-        showToast('Erro ao salvar devolução.', 'error'); 
-    }
-}
-
-
+                batch.update(retiradaRef, { 
+                    itens: updatedItens, 
+                    status: statusFinal, 
+                    observacao: data.observacao, 
+                    dataDevolucao: new Date().toISOString() 
+                });
+                
+                await batch.commit(); 
+                logAction('DEVOLUCAO_REGISTRADA', `Devolução/Baixa automática processada para "${currentRetirada.professorName}".`);
+                showToast('Devolução e baixa registradas com sucesso!', 'success');
+                currentRetirada = null;
+            } catch(e) { 
+                console.error("Erro ao salvar devolução:", e); 
+                showToast('Erro ao salvar devolução.', 'error'); 
+            }
+        }
 
         function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const docPdf = new jsPDF();
-            docPdf.setFontSize(18); docPdf.text("Relatório de Movimentações", 14, 22);
-            docPdf.setFontSize(11); docPdf.setTextColor(100); docPdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 29);
-            const tableData = [];
-            
-            document.querySelectorAll('#retiradas-accordion-container .p-4').forEach(row => {
-                const professorName = row.querySelector('.font-bold.text-gray-900').textContent;
-                const operatorName = row.querySelector('.text-xs.text-gray-500').textContent.replace('Operador: ', '');
-                const itemsText = Array.from(row.querySelectorAll('.mt-2.text-xs > div')).map(d => d.textContent).join('\n');
-                const obs = row.querySelector('.observation-text')?.textContent || '';
-                const status = row.querySelector('.px-2.inline-flex').textContent.trim();
+            try {
+                const { jsPDF } = window.jspdf;
+                const docPdf = new jsPDF();
                 
-                const dateString = row.closest('details').querySelector('summary span').textContent.split('(')[0].trim();
+                docPdf.setFontSize(18); 
+                docPdf.text("Relatório de Movimentações", 14, 22);
+                docPdf.setFontSize(11); 
+                docPdf.setTextColor(100); 
+                docPdf.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 14, 29);
+                
+                const tableData = [];
+                
+                document.querySelectorAll('#retiradas-accordion-container details').forEach(detailsNode => {
+                    const summarySpan = detailsNode.querySelector('summary span');
+                    if (!summarySpan) return;
+                    const dateString = summarySpan.textContent.split('(')[0].trim();
 
-                tableData.push([professorName, itemsText, dateString, operatorName, status, obs]);
-            });
+                    detailsNode.querySelectorAll('.shadow-sm').forEach(row => {
+                        const nameEl = row.querySelector('.font-bold.text-gray-900');
+                        if (!nameEl) return; 
+                        
+                        const professorName = nameEl.textContent.trim();
+                        
+                        const opEl = row.querySelector('.text-xs.text-gray-500');
+                        const operatorName = opEl ? opEl.textContent.replace('Operador:', '').trim() : '';
+                        
+                        const itemsDiv = row.querySelector('.mt-2.text-xs');
+                        let itemsText = '';
+                        if (itemsDiv) {
+                            itemsText = Array.from(itemsDiv.querySelectorAll('div:not(.observation-text)'))
+                                .map(d => d.textContent.trim())
+                                .join('\n');
+                        }
+                        
+                        const obsEl = row.querySelector('.observation-text');
+                        const obs = obsEl ? obsEl.textContent.trim() : '';
+                        
+                        const statusEl = row.querySelector('.px-2.inline-flex');
+                        const status = statusEl ? statusEl.textContent.trim() : '';
+                        
+                        tableData.push([professorName, itemsText, dateString, operatorName, status, obs]);
+                    });
+                });
 
-            docPdf.autoTable({ startY: 35, head: [['Colaborador', 'Itens', 'Data', 'Operador', 'Status', 'Observação']], body: tableData, theme: 'striped', headStyles: { fillColor: [41, 128, 185] }, styles: { cellPadding: 2, fontSize: 8 }});
-            docPdf.save(`relatorio_almoxarifado_${new Date().toISOString().slice(0,10)}.pdf`);
-        }
-        
-        function showPurchaseRequestDetails(requestId, purchaseRequests) {
-            const request = purchaseRequests.find(r => r.id === requestId);
-            if (!request) {
-                showToast('Detalhes da solicitação não encontrados.', 'error');
-                return;
+                if (tableData.length === 0) {
+                    showToast("Não há dados visíveis para gerar o relatório.", "error");
+                    return;
+                }
+
+                docPdf.autoTable({ 
+                    startY: 35, 
+                    head: [['Colaborador', 'Itens', 'Data', 'Operador', 'Status', 'Observação']], 
+                    body: tableData, 
+                    theme: 'striped', 
+                    headStyles: { fillColor: [41, 128, 185] }, 
+                    styles: { cellPadding: 2, fontSize: 8 }
+                });
+                
+                docPdf.save(`relatorio_almoxarifado_${new Date().toISOString().slice(0,10)}.pdf`);
+                showToast("Relatório gerado com sucesso!", "success");
+                
+            } catch (error) {
+                console.error("Erro ao gerar PDF:", error);
+                showToast("Ocorreu um erro ao gerar o relatório.", "error");
             }
-
-            const statusClasses = { 
-                'Pendente de Aprovação': 'bg-gray-200 text-gray-800',
-                'Aprovado': 'bg-blue-100 text-blue-800',
-                'Rejeitado': 'bg-red-100 text-red-800',
-                'Em Análise': 'bg-yellow-100 text-yellow-800',
-                'Comprado': 'bg-indigo-100 text-indigo-800',
-                'Entregue': 'bg-green-100 text-green-800',
-                'Cancelado': 'bg-gray-200 text-gray-700'
-            };
-
-            const contentHtml = `
-                <div class="space-y-4 text-sm">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Item Solicitado</p>
-                            <p class="text-lg font-bold text-gray-800">${request.itemName} (Qtd: ${request.quantidade})</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Status Atual</p>
-                            <p class="text-lg font-bold"><span class="px-3 py-1 rounded-full ${statusClasses[request.status] || ''}">${request.status}</span></p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 p-3 rounded-md">
-                        <p class="font-semibold text-gray-500">Descrição / Justificativa</p>
-                        <p class="text-gray-700 whitespace-pre-wrap">${request.itemDescricao}</p>
-                    </div>
-                     ${request.itemLink ? `
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Link de Referência</p>
-                            <a href="${request.itemLink}" target="_blank" class="text-blue-600 hover:underline break-all">${request.itemLink}</a>
-                        </div>` : ''
-                    }
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Solicitante</p>
-                            <p class="text-gray-700">${request.solicitanteName}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Data da Solicitação</p>
-                            <p class="text-gray-700">${request.timestamp?.toDate().toLocaleString('pt-BR') || 'N/A'}</p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-md">
-                            <p class="font-semibold text-gray-500">Aprovador</p>
-                            <p class="text-gray-700">${request.aprovador || 'Aguardando'}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            const modal = document.getElementById('details-modal');
-            document.getElementById('details-modal-title').textContent = 'Detalhes do Pedido de Compra';
-            document.getElementById('details-modal-content').innerHTML = contentHtml;
-            openModal(modal);
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1828,14 +1593,13 @@ async function saveDevolucao(data) {
             });
             
             document.getElementById('cancel-login-btn').addEventListener('click', () => closeModal(document.getElementById('login-modal')));
+            
             document.getElementById('logout-btn').addEventListener('click', () => {
                 currentUser = { role: 'viewer', name: 'Nenhum', permissions: {}, isSupervisor: false };
                 detachListeners();
-                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; auditLog = []; localOperators = []; localSolicitacoes = []; localPurchaseRequests = [];
-                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderAuditLog([]); renderOperators([]); renderSolicitacoes(); renderPurchaseRequests(); renderApprovals(); renderPurchaseHistory();
+                localProfessores = []; localItens = []; localCategories = []; allRetiradas = []; auditLog = []; localOperators = []; localSolicitacoes = []; 
+                renderProfessores([]); renderItens([]); renderCategories([]); renderRetiradas(); renderAuditLog([]); renderOperators([]); renderSolicitacoes(); 
                 updateSolicitacoesBadge();
-                updatePurchaseRequestsBadge();
-                updateApprovalsBadge();
                 updateUIAccess();
                 showToast('Você saiu do sistema.', 'info');
             });
@@ -1845,25 +1609,35 @@ async function saveDevolucao(data) {
                 const name = document.getElementById('login-name').value.trim();
                 const registration = document.getElementById('login-registration').value.trim();
 
-                if (name === 'admin' && registration === 'admin') {
-                    currentUser = { role: 'admin', name: 'Admin', permissions: { canManageItems: true, canManageProfessors: true, canGenerateReports: true, canManageRetiradas: true }, isSupervisor: true };
-                    showToast('Bem-vindo, Administrador!', 'success');
-                } else {
-                    const operator = localOperators.find(op => op.name === name && op.registration === registration);
-                    if (operator) {
-                        const professorAsSupervisor = localProfessores.find(p => p.matricula === registration && p.isSupervisor);
-                        currentUser = { role: 'operator', name: operator.name, permissions: operator.permissions || {}, isSupervisor: !!(professorAsSupervisor) };
-                        showToast(`Bem-vindo, ${operator.name}!`, 'success');
+                const operator = localOperators.find(op => normalizeString(op.name) === normalizeString(name) && op.registration === registration);
+
+                if (operator) {
+                    if (operator.isAdmin) {
+                        currentUser = { 
+                            role: 'admin', 
+                            name: operator.name, 
+                            permissions: { canManageItems: true, canManageProfessors: true, canGenerateReports: true, canManageRetiradas: true }, 
+                            isSupervisor: true 
+                        };
+                        showToast(`Bem-vindo, Administrador(a) ${operator.name}!`, 'success');
                     } else {
-                        showToast('Nome de usuário ou matrícula inválidos.', 'error');
-                        return;
+                        const professorAsSupervisor = localProfessores.find(p => p.matricula === registration && p.isSupervisor);
+                        currentUser = { 
+                            role: 'operator', 
+                            name: operator.name, 
+                            permissions: operator.permissions || {}, 
+                            isSupervisor: !!(professorAsSupervisor) 
+                        };
+                        showToast(`Bem-vindo, ${operator.name}!`, 'success');
                     }
+                    
+                    attachListeners();
+                    updateUIAccess();
+                    closeModal(document.getElementById('login-modal'));
+                    document.getElementById('login-form').reset();
+                } else {
+                    showToast('Nome de usuário ou matrícula inválidos.', 'error');
                 }
-                
-                attachListeners();
-                updateUIAccess();
-                closeModal(document.getElementById('login-modal'));
-                document.getElementById('login-form').reset();
             });
 
             const tabs = document.querySelectorAll('.tab-button');
@@ -1873,13 +1647,62 @@ async function saveDevolucao(data) {
             document.getElementById('add-professor-form').addEventListener('submit', (e) => { e.preventDefault(); const nameInput = document.getElementById('professor-name'); const matriculaInput = document.getElementById('professor-matricula'); const isSupervisor = document.getElementById('professor-is-supervisor').checked; if(nameInput.value.trim() && matriculaInput.value.trim()){ addProfessor(nameInput.value.trim(), matriculaInput.value.trim(), isSupervisor); e.target.reset(); } });
             document.getElementById('add-item-form').addEventListener('submit', (e) => { e.preventDefault(); const n = document.getElementById('item-name'), q = document.getElementById('item-initial-quantity'), c = document.getElementById('item-category'); if(n.value.trim()&&q.value){ addItem(n.value.trim(), q.value, c.value); n.value=q.value=''; c.value=''; } });
             document.getElementById('add-category-form').addEventListener('submit', (e) => { e.preventDefault(); const i = document.getElementById('category-name'); if(i.value.trim()){ addCategory(i.value.trim()); i.value=''; } });
-            document.getElementById('add-operator-form').addEventListener('submit', (e) => { e.preventDefault(); const n = document.getElementById('operator-new-name'); const r = document.getElementById('operator-new-registration'); const perms = { canManageRetiradas: document.getElementById('perm-manage-retiradas').checked, canManageItems: document.getElementById('perm-manage-items').checked, canManageProfessors: document.getElementById('perm-manage-professors').checked, canGenerateReports: document.getElementById('perm-generate-reports').checked }; if (n.value.trim() && r.value.trim()) { addOperator(n.value.trim(), r.value.trim(), perms); e.target.reset(); } });
-            document.getElementById('edit-operator-form').addEventListener('submit', async (e) => { e.preventDefault(); const id = document.getElementById('edit-operator-id').value; const data = { name: document.getElementById('edit-operator-name').value.trim(), registration: document.getElementById('edit-operator-registration').value.trim(), permissions: { canManageRetiradas: document.getElementById('edit-perm-manage-retiradas').checked, canManageItems: document.getElementById('edit-perm-manage-items').checked, canManageProfessors: document.getElementById('edit-perm-manage-professors').checked, canGenerateReports: document.getElementById('edit-perm-generate-reports').checked } }; await updateOperator(id, data); closeModal(document.getElementById('edit-operator-modal')); });
+            
+            document.getElementById('add-operator-form').addEventListener('submit', (e) => { 
+                e.preventDefault(); 
+                const n = document.getElementById('operator-new-name'); 
+                const r = document.getElementById('operator-new-registration'); 
+                const perms = { canManageRetiradas: document.getElementById('perm-manage-retiradas').checked, canManageItems: document.getElementById('perm-manage-items').checked, canManageProfessors: document.getElementById('perm-manage-professors').checked, canGenerateReports: document.getElementById('perm-generate-reports').checked }; 
+                const isAdmin = document.getElementById('operator-is-admin').checked;
+                if (n.value.trim() && r.value.trim()) { 
+                    addOperator(n.value.trim(), r.value.trim(), perms, isAdmin);
+                    e.target.reset(); 
+                } 
+            });
+            
+            document.getElementById('edit-operator-form').addEventListener('submit', async (e) => { 
+                e.preventDefault(); 
+                const id = document.getElementById('edit-operator-id').value; 
+                const data = { 
+                    name: document.getElementById('edit-operator-name').value.trim(), 
+                    registration: document.getElementById('edit-operator-registration').value.trim(), 
+                    isAdmin: document.getElementById('edit-operator-is-admin').checked,
+                    permissions: { 
+                        canManageRetiradas: document.getElementById('edit-perm-manage-retiradas').checked, 
+                        canManageItems: document.getElementById('edit-perm-manage-items').checked, 
+                        canManageProfessors: document.getElementById('edit-perm-manage-professors').checked, 
+                        canGenerateReports: document.getElementById('edit-perm-generate-reports').checked 
+                    } 
+                }; 
+                await updateOperator(id, data); 
+                closeModal(document.getElementById('edit-operator-modal')); 
+            });
+            
             document.getElementById('edit-item-form').addEventListener('submit', async (e) => { e.preventDefault(); const id = document.getElementById('edit-item-id').value; const newData = { name: document.getElementById('edit-item-name').value, categoryId: document.getElementById('edit-item-category').value, quantity: Number(document.getElementById('edit-item-quantity').value), totalQuantity: Number(document.getElementById('edit-item-total-quantity').value) }; if(newData.quantity > newData.totalQuantity) { showMessageModal('Erro', 'A qtd. atual não pode ser maior que a total.'); return; } await updateItem(id, newData); closeModal(document.getElementById('edit-item-modal')); });
             document.getElementById('edit-professor-form').addEventListener('submit', async (e) => { e.preventDefault(); const id = document.getElementById('edit-professor-id').value; const data = { name: document.getElementById('edit-professor-name').value.trim(), matricula: document.getElementById('edit-professor-matricula').value.trim(), isSupervisor: document.getElementById('edit-professor-is-supervisor').checked }; await updateProfessor(id, data); closeModal(document.getElementById('edit-professor-modal')); });
 
             document.getElementById('professores-list').addEventListener('click', (e) => { const li = e.target.closest('li[data-id]'); if (!li) return; const id = li.dataset.id; const prof = localProfessores.find(p => p.id === id); if(!prof) return; const btn = e.target.closest('button'); if (!btn) return; if (btn.classList.contains('delete-professor-btn')) { deleteProfessor(id, prof.name); } else if (btn.classList.contains('history-professor-btn')) { showHistory('professor', id, prof.name); } else if (btn.classList.contains('edit-professor-btn')) { document.getElementById('edit-professor-id').value = id; document.getElementById('edit-professor-name').value = prof.name; document.getElementById('edit-professor-matricula').value = prof.matricula; document.getElementById('edit-professor-is-supervisor').checked = !!prof.isSupervisor; openModal(document.getElementById('edit-professor-modal')); } });
-            document.getElementById('operators-list').addEventListener('click', (e) => { const btn = e.target.closest('button'); if (!btn) return; const id = btn.dataset.id; const operator = localOperators.find(op => op.id === id); if (btn.classList.contains('delete-operator-btn')) { deleteOperator(id, operator.name); } if (btn.classList.contains('edit-operator-btn')) { document.getElementById('edit-operator-id').value = id; document.getElementById('edit-operator-name').value = operator.name; document.getElementById('edit-operator-registration').value = operator.registration; const perms = operator.permissions || {}; document.getElementById('edit-perm-manage-retiradas').checked = !!perms.canManageRetiradas; document.getElementById('edit-perm-manage-items').checked = !!perms.canManageItems; document.getElementById('edit-perm-manage-professors').checked = !!perms.canManageProfessors; document.getElementById('edit-perm-generate-reports').checked = !!perms.canGenerateReports; openModal(document.getElementById('edit-operator-modal')); }});
+            document.getElementById('operators-list').addEventListener('click', (e) => { 
+                const btn = e.target.closest('button'); 
+                if (!btn) return; 
+                const id = btn.dataset.id; 
+                const operator = localOperators.find(op => op.id === id); 
+                if (btn.classList.contains('delete-operator-btn')) { 
+                    deleteOperator(id, operator.name); 
+                } 
+                if (btn.classList.contains('edit-operator-btn')) { 
+                    document.getElementById('edit-operator-id').value = id; 
+                    document.getElementById('edit-operator-name').value = operator.name; 
+                    document.getElementById('edit-operator-registration').value = operator.registration; 
+                    document.getElementById('edit-operator-is-admin').checked = !!operator.isAdmin;
+                    const perms = operator.permissions || {}; 
+                    document.getElementById('edit-perm-manage-retiradas').checked = !!perms.canManageRetiradas; 
+                    document.getElementById('edit-perm-manage-items').checked = !!perms.canManageItems; 
+                    document.getElementById('edit-perm-manage-professors').checked = !!perms.canManageProfessors; 
+                    document.getElementById('edit-perm-generate-reports').checked = !!perms.canGenerateReports; 
+                    openModal(document.getElementById('edit-operator-modal')); 
+                }
+            });
             
             document.getElementById('itens-accordion-container').addEventListener('click', (e) => { 
                 const trigger = e.target.closest('button, .history-item-trigger'); 
@@ -1924,6 +1747,9 @@ async function saveDevolucao(data) {
                 document.getElementById('modal-title').textContent = 'Nova Retirada'; 
                 document.getElementById('retirada-date').value = new Date().toISOString().slice(0, 10); 
                 
+                document.getElementById('solicitacao-id-carrier').value = '';
+                document.getElementById('solicitacao-periodo-carrier').value = '';
+
                 const professorDatalist = document.getElementById('professores-datalist');
                 professorDatalist.innerHTML = '';
                 localProfessores.forEach(prof => {
@@ -1991,15 +1817,15 @@ async function saveDevolucao(data) {
                 const professorName = document.getElementById('retirada-professor-input').value;
                 if (!professorId) { showMessageModal('Erro', 'Colaborador inválido. Selecione um da lista ou adicione um novo.'); return; }
                 const data = { 
-    id: document.getElementById('retirada-id').value, 
-    professorName, 
-    professorId, 
-    dataRetirada: document.getElementById('retirada-date').value, 
-    periodo: document.getElementById('solicitacao-periodo-carrier').value || 'Integral', // <--- CAMPO NOVO
-    itens: items, 
-    status: currentRetirada ? currentRetirada.status : 'Pendente', 
-    operator: currentRetirada ? currentRetirada.operator : currentUser.name 
-};
+                    id: document.getElementById('retirada-id').value, 
+                    professorName, 
+                    professorId, 
+                    dataRetirada: document.getElementById('retirada-date').value, 
+                    periodo: document.getElementById('solicitacao-periodo-carrier').value || 'Integral',
+                    itens: items, 
+                    status: currentRetirada ? currentRetirada.status : 'Pendente', 
+                    operator: currentRetirada ? currentRetirada.operator : currentUser.name 
+                };
                 
                 const solicitacaoIdCarrier = document.getElementById('solicitacao-id-carrier');
                 const solicitacaoId = solicitacaoIdCarrier.value;
@@ -2020,12 +1846,14 @@ async function saveDevolucao(data) {
                 const id = target.dataset.id;
                 currentRetirada = allRetiradas.find(r => r.id === id); 
                 if(!currentRetirada) return; 
+                
                 if (target.classList.contains('delete-retirada-btn')) deleteRetirada(id); 
                 if (target.classList.contains('finalize-btn')) showConfirmModal('Finalizar Retirada', 'Finalizar com itens pendentes?', ()=>finalizeRetirada(id)); 
                 if (target.classList.contains('edit-retirada-btn')) { 
                     document.getElementById('modal-title').textContent = 'Editar Retirada'; 
                     document.getElementById('retirada-id').value = id; 
                     document.getElementById('solicitacao-id-carrier').value = '';
+                    
                     const professorDatalist = document.getElementById('professores-datalist');
                     professorDatalist.innerHTML = '';
                     localProfessores.forEach(prof => { const option = document.createElement('option'); option.value = prof.name; option.dataset.id = prof.id; professorDatalist.appendChild(option); });
@@ -2045,14 +1873,12 @@ async function saveDevolucao(data) {
                     renderItemAccordionInModal();
                     openModal(document.getElementById('retirada-modal')); 
                 } 
-if (target.classList.contains('devolucao-btn')) { 
-    document.getElementById('devolucao-id').value = id; 
-    document.getElementById('devolucao-professor-name').textContent = currentRetirada.professorName; 
-    document.getElementById('devolucao-observacao').value = currentRetirada.observacao || ''; 
-    
+                if (target.classList.contains('devolucao-btn')) { 
+                    document.getElementById('devolucao-id').value = id; 
+                    document.getElementById('devolucao-professor-name').textContent = currentRetirada.professorName; 
+                    document.getElementById('devolucao-observacao').value = currentRetirada.observacao || ''; 
 
-    const list = document.getElementById('devolucao-itens-list'); 
-    // ... resto do código continua igual
+                    const list = document.getElementById('devolucao-itens-list'); 
                     list.innerHTML = ''; 
                     currentRetirada.itens.forEach(item => { 
                         const maxDev = item.quantidade - (item.quantidadeDevolvida || 0); 
@@ -2068,23 +1894,21 @@ if (target.classList.contains('devolucao-btn')) {
                 }
             });
 
-document.getElementById('devolucao-form').addEventListener('submit', async (e) => { 
-    e.preventDefault(); 
-    
-    // Captura o que foi digitado, mesmo que seja zero
-    const itensDevolvidos = Array.from(document.querySelectorAll('.devolucao-item-row .devolucao-quantity'))
-        .map(i => ({ itemId: i.dataset.itemId, quantidade: Number(i.value) })); 
-        
-    await saveDevolucao({ 
-        id: document.getElementById('devolucao-id').value, 
-        itensDevolvidos, 
-        observacao: document.getElementById('devolucao-observacao').value 
-    }); 
-    
-    closeModal(document.getElementById('devolucao-modal')); 
-});
+            document.getElementById('devolucao-form').addEventListener('submit', async (e) => { 
+                e.preventDefault(); 
+                
+                const itensDevolvidos = Array.from(document.querySelectorAll('.devolucao-item-row .devolucao-quantity'))
+                    .map(i => ({ itemId: i.dataset.itemId, quantidade: Number(i.value) })); 
+                    
+                await saveDevolucao({ 
+                    id: document.getElementById('devolucao-id').value, 
+                    itensDevolvidos, 
+                    observacao: document.getElementById('devolucao-observacao').value 
+                }); 
+                
+                closeModal(document.getElementById('devolucao-modal')); 
+            });
 
-            
             document.getElementById('solicitacoes-table-body').addEventListener('click', async (e) => {
                 const button = e.target.closest('button');
                 if (!button) return;
@@ -2107,7 +1931,7 @@ document.getElementById('devolucao-form').addEventListener('submit', async (e) =
                     
                     document.getElementById('retirada-professor-input').value = solicitacao.solicitanteName;
                     document.getElementById('retirada-professor-id').value = solicitacao.solicitanteId;
-                    document.getElementById('retirada-date').value = new Date().toISOString().slice(0, 10);
+                    document.getElementById('retirada-date').value = solicitacao.dataAgendamento;
                     
                     document.getElementById('solicitacao-id-carrier').value = solicitacao.id;
                     document.getElementById('solicitacao-periodo-carrier').value = solicitacao.periodo || 'Integral';
@@ -2129,71 +1953,6 @@ document.getElementById('devolucao-form').addEventListener('submit', async (e) =
                 }
             });
 
-            document.getElementById('compras-table-body').addEventListener('click', async (e) => {
-                const button = e.target.closest('button.status-btn');
-                if (button) {
-                    e.stopPropagation();
-                    const purchaseId = button.dataset.id;
-                    const newStatus = button.dataset.status;
-                    const purchaseRequest = localPurchaseRequests.find(s => s.id === purchaseId);
-                    if (!purchaseRequest) return;
-
-                    const message = `Deseja alterar o status do pedido para "${newStatus}"?`;
-                    showConfirmModal('Confirmar Alteração de Status', message, async () => {
-                        try {
-                            await updateDoc(getDocRef('solicitacoes_compra', purchaseId), { status: newStatus });
-                            logAction('PEDIDO_COMPRA_STATUS_ALTERADO', `Status do pedido de ${purchaseRequest.solicitanteName} alterado para ${newStatus}.`);
-                            showToast(`Status do pedido alterado para ${newStatus}.`, 'success');
-                        } catch (error) {
-                            console.error("Erro ao atualizar status do pedido:", error);
-                            showToast("Erro ao atualizar o status.", 'error');
-                        }
-                    });
-                }
-            });
-            
-            document.getElementById('approvals-table-body').addEventListener('click', async (e) => {
-                const button = e.target.closest('button.approval-action-btn');
-                if (button) {
-                    e.stopPropagation();
-                    const purchaseId = button.dataset.id;
-                    const action = button.dataset.action;
-                    const newStatus = action === 'approve' ? 'Aprovado' : 'Rejeitado';
-                    
-                    const purchaseRequest = localPurchaseRequests.find(s => s.id === purchaseId);
-                    if (!purchaseRequest) return;
-
-                    const message = `Deseja ${action === 'approve' ? 'aprovar' : 'rejeitar'} este pedido de compra?`;
-                    showConfirmModal(`Confirmar ${action === 'approve' ? 'Aprovação' : 'Rejeição'}`, message, async () => {
-                        try {
-                            await updateDoc(getDocRef('solicitacoes_compra', purchaseId), { 
-                                status: newStatus,
-                                aprovador: currentUser.name,
-                                dataAprovacao: serverTimestamp()
-                            });
-                            logAction('PEDIDO_COMPRA_APROVADO', `Pedido de ${purchaseRequest.solicitanteName} foi ${newStatus.toLowerCase()} por ${currentUser.name}.`);
-                            showToast(`Pedido ${newStatus.toLowerCase()} com sucesso.`, 'success');
-                        } catch (error) {
-                            console.error("Erro ao processar aprovação:", error);
-                            showToast("Erro ao processar a ação.", 'error');
-                        }
-                    });
-                }
-            });
-
-            ['approvals-table-body', 'compras-table-body', 'purchase-history-table-body'].forEach(tbodyId => {
-                document.getElementById(tbodyId).addEventListener('click', (e) => {
-                    const row = e.target.closest('tr.request-row');
-                    if (!row || e.target.closest('button') || e.target.closest('a')) {
-                        return;
-                    }
-                    const requestId = row.dataset.requestId;
-                    if (requestId) {
-                        showPurchaseRequestDetails(requestId, localPurchaseRequests);
-                    }
-                });
-            });
-
             document.getElementById('modal-item-filter').addEventListener('input', (e) => renderItemAccordionInModal(e.target.value));
             document.getElementById('modal-itens-accordion-container').addEventListener('click', (e) => {
                 const button = e.target.closest('.add-item-from-modal-btn');
@@ -2210,6 +1969,7 @@ document.getElementById('devolucao-form').addEventListener('submit', async (e) =
                     }
                 }
             });
+            
             document.getElementById('retirada-itens-list').addEventListener('click', (e) => { 
                 const btn = e.target.closest('.remove-item-row-btn');
                 if(btn) {
@@ -2221,8 +1981,17 @@ document.getElementById('devolucao-form').addEventListener('submit', async (e) =
 
             ['cancel-retirada-btn','cancel-devolucao-btn','confirm-cancel-btn','message-ok-btn','close-history-modal-btn','cancel-edit-item-btn', 'cancel-edit-operator-btn', 'cancel-quick-add-btn', 'cancel-quick-add-prof-btn', 'cancel-edit-professor-btn', 'close-details-modal-btn'].forEach(id => {
                 const btn = document.getElementById(id);
-                if(btn) btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal')));
+                if(btn) {
+                    btn.addEventListener('click', (e) => {
+                        closeModal(e.target.closest('.modal'));
+                        if (id === 'cancel-retirada-btn') {
+                            document.getElementById('solicitacao-id-carrier').value = '';
+                            document.getElementById('solicitacao-periodo-carrier').value = '';
+                        }
+                    });
+                }
             });
+            
             document.getElementById('gerar-pdf-btn').addEventListener('click', generatePDF);
             
             document.getElementById('pending-card').addEventListener('click', () => {
